@@ -42,7 +42,13 @@ def finetuning_gpt(client, prompt_completion_pairs):
     upload = client.files.create(file=buffer, purpose="fine-tune")
     job = client.fine_tuning.jobs.create(
         training_file=upload.id,
-        model="gpt-3.5-turbo-0125"
+        model="gpt-3.5-turbo-0125",
+        hyperparameters={
+            "n_epochs": 3,
+            "batch_size": "auto",
+            "learning_rate_multiplier": 0.1
+        },
+        suffix="jp-en-finetune-v1"       
     )
     return job
 

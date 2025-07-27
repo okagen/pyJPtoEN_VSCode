@@ -10,7 +10,6 @@ from dotenv import load_dotenv
 
 #======================================================================
 # 指定の翻訳モデルを使って、日本語テキストを英語に翻訳する
-#======================================================================
 def translate_text(client, modelID, text, max_tokens=300, temperature=0.7):
     response = client.chat.completions.create(
         model=modelID,
