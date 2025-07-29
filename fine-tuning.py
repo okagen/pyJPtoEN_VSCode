@@ -3,6 +3,7 @@ import os
 from openai import OpenAI
 import pandas as pd
 import io, json
+import configparser
 
 #======================================================================
 # Excelファイルから日本語に対する英語表現のを取得
@@ -56,11 +57,11 @@ def finetuning_gpt(client, prompt_completion_pairs):
 # ファインチューニング状況確認　30秒ごとに状態を表示する
 # モデルの生成はOpenAI diveloper's platform上で状況確認できるので、
 # この処理が終わる前に強制終了しても問題ない。
-def wait_for_ft_job(client, job_id):
+def wait_for_ft_job(client, job_id, env_key):
     import time
     while True:
         resp = client.fine_tuning.jobs.retrieve(job_id)
-        print("Status:", resp.status)
+        print("Status:(", env_key, ")", resp.status)
         if resp.status in ("succeeded", "failed"):
             return resp
         time.sleep(30)
@@ -69,16 +70,23 @@ def wait_for_ft_job(client, job_id):
 if __name__ == "__main__":
 
     load_dotenv()
-    vocab_excel = "日英対照表.xlsx"
+
+    # Create a ConfigParser object
+    config = configparser.ConfigParser()
+    with open('config.ini', 'r', encoding='utf-8') as f:
+        config.read_file(f)
+
+    vocab_excel = config['input']['glossary']
     vocab_dict = load_custom_vocab_from_excel(vocab_excel)
     vocab_pairs = create_vocab_instructions(vocab_dict)
 
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY_2"))
+    env_key = "OPENAI_API_KEY_004"
+    client = OpenAI(api_key=os.getenv(env_key))
     job = finetuning_gpt(client, vocab_pairs)
     print(f"Fine-Tune Job ID: {job.id}; status: {job.status}")
     print("------------------")
 
-    resp = wait_for_ft_job(client, job.id)
+    resp = wait_for_ft_job(client, job.id, env_key)
     ft_model = resp.fine_tuned_model
     print(f"Fine-Tune Model ID: {ft_model}")
     print("===  model is ready ====")

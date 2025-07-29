@@ -6,7 +6,8 @@ from docx.oxml.table import CT_Tc
 import tiktoken
 from tqdm import tqdm
 from dotenv import load_dotenv
-
+import configparser
+import logging
 
 #======================================================================
 # 指定の翻訳モデルを使って、日本語テキストを英語に翻訳する
@@ -72,25 +73,42 @@ def uniquify(path):
 
 # Example usage
 if __name__ == "__main__":
+    # Configure the logger
+    logging.basicConfig(
+        filename='use.log',              # Output log file
+        filemode='w',                    # Overwrite each time ('a' to append)
+        level=logging.DEBUG,             # Log level (use INFO or WARNING for less verbosity)
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+    logging.warning('Warning message')
+    logging.error('Error message')
 
     load_dotenv()
 
-    input_path =  r"87Q3_決算短信文章案_05281800.docx"
+    # Create a ConfigParser object
+    config = configparser.ConfigParser()
+    with open('config.ini', 'r', encoding='utf-8') as f:
+        config.read_file(f)
+
+    input_path =  config['input']['word_jp']
     output_path = f"output_{os.path.basename(input_path)}"
     output_path = uniquify(output_path)
     doc = Document(input_path)
     doc.save(output_path)
     out = Document(output_path)
 
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY_2"))
-    modelID = os.getenv("OPENAI_API_MODEL_2")    
+    env_key = "OPENAI_API_KEY_005"
+    client = OpenAI(api_key=os.getenv(env_key))
+
+    env_model_id = "OPENAI_API_MODEL_005"
+    modelID = os.getenv(env_model_id)
 
     for para in tqdm(list(iter_paragraphs(out))):
         text = para.text.strip()
         if not text:
             continue
         try:
-            print("=====================================")
+            print("===========================", env_key, " : ",env_model_id)
             print("【原文】" + text)
 
             translated = translate_text(client, modelID, text)
@@ -106,3 +124,4 @@ if __name__ == "__main__":
     out.save(output_path)
     print("完了:", output_path)
 
+    #pyinstaller --onefile use.py
