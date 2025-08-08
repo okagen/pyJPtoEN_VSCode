@@ -80,7 +80,7 @@ if __name__ == "__main__":
     vocab_dict = load_custom_vocab_from_excel(vocab_excel)
     vocab_pairs = create_vocab_instructions(vocab_dict)
 
-    env_key = "OPENAI_API_KEY_004"
+    env_key = "OPENAI_API_KEY_10"
     client = OpenAI(api_key=os.getenv(env_key))
     job = finetuning_gpt(client, vocab_pairs)
     print(f"Fine-Tune Job ID: {job.id}; status: {job.status}")
