@@ -96,11 +96,10 @@ if __name__ == "__main__":
     doc = Document(input_path)
     doc.save(output_path)
     out = Document(output_path)
-    env_key = "OPENAI_API_KEY_005"
-    #env_key = "OPENAI_API_KEY_SA_006"
+    env_key = "API_9519-01_TRY"
     client = OpenAI(api_key=os.getenv(env_key))
 
-    env_model_id = "OPENAI_API_MODEL_005"
+    env_model_id = "API_9519-01_TRY_MODEL"
     modelID = os.getenv(env_model_id)
 
     for para in tqdm(list(iter_paragraphs(out))):

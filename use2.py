@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 
 # .env からAPIキー読み込み
 load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY_006-2")  # Service Account の APIキー
+
+api_key = os.getenv("API_9519-01_TRY")  # Service Account の APIキー
 #api_key = os.getenv("OPENAI_API_KEY_SA_006")  # Service Account の APIキー
 
 # 新しいClientオブジェクトを使う
