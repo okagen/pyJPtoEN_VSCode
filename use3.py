@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 # APIキーを環境変数から取得（Service Account のキー）
 load_dotenv()
-api_key = os.getenv("API_9519-01_TRY_SA")  # Service Account の APIキー
+api_key = os.getenv("API_9519-01_TRY")  # Service Account の APIキー
 
 client = OpenAI(api_key=api_key)
 
