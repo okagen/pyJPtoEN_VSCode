@@ -8,6 +8,7 @@ from tqdm import tqdm
 from dotenv import load_dotenv
 import configparser
 import logging
+from pathlib import Path
 
 #======================================================================
 # 指定の翻訳モデルを使って、日本語テキストを英語に翻訳する
@@ -87,11 +88,12 @@ if __name__ == "__main__":
 
     # Create a ConfigParser object
     config = configparser.ConfigParser()
-    with open('config.ini', 'r', encoding='utf-8') as f:
+    BASE_DIR = Path(__file__).resolve().parent
+    with open(BASE_DIR / 'config.ini', 'r', encoding='utf-8') as f:
         config.read_file(f)
 
-    input_path =  config['input']['word_jp']
-    output_path = f"output_{os.path.basename(input_path)}"
+    input_path =  BASE_DIR / config['input']['word_jp']
+    output_path =  BASE_DIR / f"output_{os.path.basename(input_path)}"
     output_path = uniquify(output_path)
     doc = Document(input_path)
     doc.save(output_path)
@@ -120,7 +122,7 @@ if __name__ == "__main__":
         except Exception as e:
             print("翻訳エラー:", e)
 
-    out.save(output_path)
+    out.save( output_path)
     print("完了:", output_path)
 
     #pyinstaller --onefile use.py

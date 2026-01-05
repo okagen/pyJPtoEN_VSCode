@@ -4,6 +4,7 @@ from openai import OpenAI
 import pandas as pd
 import io, json
 import configparser
+from pathlib import Path
 
 #======================================================================
 # Excelファイルから日本語に対する英語表現のを取得
@@ -73,10 +74,12 @@ if __name__ == "__main__":
 
     # Create a ConfigParser object
     config = configparser.ConfigParser()
-    with open('config.ini', 'r', encoding='utf-8') as f:
+    BASE_DIR = Path(__file__).resolve().parent
+    config_path = BASE_DIR / "config.ini"
+    with open(config_path, 'r', encoding='utf-8') as f:
         config.read_file(f)
 
-    vocab_excel = config['input']['glossary']
+    vocab_excel = BASE_DIR / config['input']['glossary']
     vocab_dict = load_custom_vocab_from_excel(vocab_excel)
     vocab_pairs = create_vocab_instructions(vocab_dict)
 
